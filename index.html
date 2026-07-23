@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure Bay — Resort &amp; Spa</title>
+  <meta name="description" content="Azure Bay Resort & Spa — курорт на первой линии. Виллы, магазин и бронирование.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Прячем сайт до конца интро ДО первой отрисовки (иначе контент мигнёт).
+       Класс вешаем скриптом: если JS выключен, сайт останется видимым. -->
+  <script>document.documentElement.classList.add('intro-active');</script>
+</head>
+<body>
+
+  <!-- ======================================================================
+     SVG-СПРАЙТ ИКОНОК
+     Иконки из открытых наборов Feather (MIT) и Lucide (ISC) — feathericons.com,
+     lucide.dev. Встроены inline: ноль внешних запросов, цвет наследуется
+     через currentColor. Использование: <svg class="icon"><use href="#i-wifi"/></svg>
+     ====================================================================== -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <defs>
+      <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"/></symbol>
+      <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></symbol>
+      <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+      <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+      <symbol id="i-anchor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+      <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+      <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ======================================================================
+     ИНТРО + ФОН: дроновое видео проигрывается ОДИН раз при загрузке,
+     затем остаётся на экране, поставленное на паузу на ПОСЛЕДНЕМ КАДРЕ, —
+     этот кадр и есть фон сайта (уходит под контент, z-index: -1).
+     Если видео недоступно (2G, reduced-motion, ошибка) — запасной синий фон.
+     ПОДКЛЮЧЕНИЕ СВОЕГО ВИДЕО: путь в data-src (не в src — загрузкой
+     управляет JS: на медленной сети или при prefers-reduced-motion
+     интро пропускается и трафик не тратится).
+     ====================================================================== -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <video id="intro-video" class="intro__video"
+           data-src="assets/flyover.mp4"
+           muted playsinline preload="none" disablepictureinpicture></video>
+    <button class="intro__skip" id="intro-skip" type="button">Пропустить</button>
+  </div>
+  <!-- Если JS выключен — интро просто не показываем -->
+  <noscript><style>.intro{display:none}</style></noscript>
+
+  <!-- ======================================================================
+     ШАПКА
+     ====================================================================== -->
+  <header class="site-header">
+    <a class="site-header__logo" href="#top">Azure&nbsp;Bay</a>
+    <nav class="site-header__nav">
+      <a href="#about">Курорт</a>
+      <a href="#shop">Магазин</a>
+      <a href="#booking">Бронь</a>
+    </nav>
+    <div class="site-header__right">
+      <button class="cart" id="cart-button" type="button" aria-label="Корзина">
+        <svg class="icon"><use href="#i-bag"/></svg>
+        <span class="cart__count" id="cart-count" hidden>0</span>
+      </button>
+      <a class="btn btn--black btn--small" href="#booking">Забронировать</a>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= ГЛАВНЫЙ ЭКРАН ================= -->
+    <section class="hero">
+      <p class="eyebrow fade-item">Resort &amp; Spa · первая линия</p>
+      <h1 class="hero__title fade-item">Azure Bay</h1>
+      <p class="hero__sub fade-item">Тишина. Океан. Простор.<br>52 виллы над лазурной бухтой.</p>
+      <div class="hero__actions fade-item">
+        <a class="btn btn--black" href="#booking">Забронировать</a>
+        <a class="btn btn--outline" href="#shop">Магазин</a>
+      </div>
+    </section>
+
+    <!-- ================= О КУРОРТЕ ================= -->
+    <section class="section" id="about">
+      <div class="section__inner">
+        <p class="eyebrow reveal">О курорте</p>
+        <h2 class="section__title reveal">Бухта, в которую хочется возвращаться</h2>
+        <div class="about__grid">
+          <p class="reveal">
+            Azure Bay спрятан между скалами и коралловым рифом. Здесь нет толп
+            и шума — только собственная лагуна и закаты, ради которых стоит
+            отложить телефон.
+          </p>
+          <p class="reveal">
+            Каждая вилла — с террасой и прямым выходом к воде. Завтрак подаём
+            до полудня: отпуск не терпит будильников.
+          </p>
+        </div>
+        <ul class="stats reveal">
+          <li><strong>52</strong><span>виллы у воды</span></li>
+          <li><strong>800 м</strong><span>своего пляжа</span></li>
+          <li><strong>4</strong><span>ресторана и бара</span></li>
+          <li><strong>24/7</strong><span>личный консьерж</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= УДОБСТВА ================= -->
+    <section class="section section--line" id="amenities">
+      <div class="section__inner">
+        <p class="eyebrow reveal">Удобства</p>
+        <h2 class="section__title reveal">Всё уже включено</h2>
+        <ul class="amenities">
+          <li class="reveal"><svg class="icon"><use href="#i-umbrella"/></svg><h3>Приватный пляж</h3><p>800 метров белого песка только для гостей.</p></li>
+          <li class="reveal"><svg class="icon"><use href="#i-droplet"/></svg><h3>Спа и хаммам</h3><p>Ритуалы на террасе над лагуной.</p></li>
+          <li class="reveal"><svg class="icon"><use href="#i-coffee"/></svg><h3>Рестораны</h3><p>Морепродукты и ужины у самой воды.</p></li>
+          <li class="reveal"><svg class="icon"><use href="#i-anchor"/></svg><h3>Трансфер катером</h3><p>Из аэропорта — за 25 минут.</p></li>
+          <li class="reveal"><svg class="icon"><use href="#i-wifi"/></svg><h3>Wi-Fi всюду</h3><p>Даже на сапе посреди лагуны.</p></li>
+          <li class="reveal"><svg class="icon"><use href="#i-star"/></svg><h3>Сервис 24/7</h3><p>Консьерж угадывает желания.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= МАГАЗИН =================
+         Карточка товара: data-name и data-price читает JS корзины.
+         Чтобы добавить товар — скопируйте <li> и поменяйте данные. -->
+    <section class="section section--white" id="shop">
+      <div class="section__inner">
+        <p class="eyebrow reveal">Магазин</p>
+        <h2 class="section__title reveal">Забрать частичку бухты с собой</h2>
+        <ul class="products">
+          <li class="product reveal" data-name="Пляжное полотенце" data-price="2400">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-layers"/></svg></div>
+            <h3 class="product__name">Пляжное полотенце</h3>
+            <p class="product__price">2 400 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+          <li class="product reveal" data-name="Шоппер Azure Bay" data-price="1800">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-bag"/></svg></div>
+            <h3 class="product__name">Шоппер Azure Bay</h3>
+            <p class="product__price">1 800 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+          <li class="product reveal" data-name="Аромасвеча «Лагуна»" data-price="1500">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-flame"/></svg></div>
+            <h3 class="product__name">Аромасвеча «Лагуна»</h3>
+            <p class="product__price">1 500 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+          <li class="product reveal" data-name="Крем SPF 50" data-price="1200">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-sun"/></svg></div>
+            <h3 class="product__name">Крем SPF 50</h3>
+            <p class="product__price">1 200 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+          <li class="product reveal" data-name="Халат с монограммой" data-price="5900">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-shirt"/></svg></div>
+            <h3 class="product__name">Халат с монограммой</h3>
+            <p class="product__price">5 900 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+          <li class="product reveal" data-name="Набор открыток" data-price="600">
+            <div class="product__media"><svg class="icon icon--big"><use href="#i-mail"/></svg></div>
+            <h3 class="product__name">Набор открыток</h3>
+            <p class="product__price">600 ₽</p>
+            <button class="btn btn--black btn--full js-add" type="button">В корзину</button>
+          </li>
+        </ul>
+        <p class="cart-summary" id="cart-summary" hidden>
+          В корзине: <span id="cart-summary-count"></span> на <span id="cart-summary-total"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= БРОНИРОВАНИЕ =================
+         Демо-форма без бэкенда: валидация дат на JS, после отправки
+         показывается подтверждение. Подключение реальной отправки —
+         в обработчике submit в js/main.js. -->
+    <section class="section section--white" id="booking">
+      <div class="section__inner section__inner--narrow">
+        <p class="eyebrow reveal">Бронирование</p>
+        <h2 class="section__title reveal">Ваша вилла уже ждёт</h2>
+        <form class="booking reveal" id="booking-form" novalidate>
+          <div class="booking__row">
+            <label class="field">
+              <span>Заезд</span>
+              <input type="date" name="checkin" id="f-checkin" required>
+            </label>
+            <label class="field">
+              <span>Выезд</span>
+              <input type="date" name="checkout" id="f-checkout" required>
+            </label>
+          </div>
+          <div class="booking__row">
+            <label class="field">
+              <span>Гости</span>
+              <select name="guests" id="f-guests">
+                <option>1</option><option selected>2</option>
+                <option>3</option><option>4</option>
+                <option>5</option><option>6</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Email</span>
+              <input type="email" name="email" id="f-email" placeholder="you@mail.com" required>
+            </label>
+          </div>
+          <p class="booking__error" id="booking-error" hidden></p>
+          <button class="btn btn--black btn--full" type="submit">
+            Отправить заявку
+            <svg class="icon icon--inline"><use href="#i-arrow"/></svg>
+          </button>
+        </form>
+        <p class="booking__done" id="booking-done" hidden>
+          <svg class="icon"><use href="#i-check"/></svg>
+          Заявка отправлена. Подтвердим бронь на почту в течение часа.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Azure Bay Resort &amp; Spa</p>
+    <p>© 2026 · stay@azurebay.example</p>
+  </footer>
+
+  <script defer src="js/main.js"></script>
+</body>
+</html>

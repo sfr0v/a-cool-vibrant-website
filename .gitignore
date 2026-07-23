@@ -1,0 +1,17 @@
+# Зависимости
+node_modules/
+
+# Vercel (локальная привязка проекта и артефакты)
+.vercel/
+
+# Логи
+*.log
+npm-debug.log*
+
+# Мусор ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Локальные настройки инструментов разработки
+.claude/

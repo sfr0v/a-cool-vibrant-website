@@ -1,0 +1,408 @@
+/* ==========================================================================
+   Azure Bay — минималистичный лендинг
+   Палитра строго из трёх цветов: белый / чёрный / синий.
+   Без градиентов, без теней, плоские поверхности, тонкие линии.
+   ========================================================================== */
+
+/* ---------- Дизайн-токены ---------- */
+:root {
+  --c-blue:  #002fa7;   /* основной фон (классический «клейновский» синий) */
+  --c-white: #ffffff;   /* текст на синем */
+  --c-black: #0a0a0a;   /* кнопки, детали, футер */
+  --line: 1px solid rgba(255, 255, 255, .25); /* тонкие белые линии на синем */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --header-h: 64px;
+}
+
+/* ---------- Сброс и база ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* Запасной фон: виден только если видео-фон недоступен (2G, ошибка…) */
+  background: var(--c-blue);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  /* Фон прозрачный: под контентом лежит последний кадр интро-видео */
+  background: transparent;
+  color: var(--c-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-weight: 600; line-height: 1.1; margin: 0 0 .5em; letter-spacing: -.01em; }
+p { margin: 0 0 1em; }
+a { color: inherit; }
+
+/* Иконки: stroke-набор (Feather/Lucide), цвет наследуют от текста */
+.icon {
+  width: 22px; height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+.icon--big { width: 44px; height: 44px; }
+.icon--inline { width: 16px; height: 16px; vertical-align: -2px; margin-left: 6px; }
+
+/* Маленький надзаголовок */
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: .78rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  opacity: .7;
+}
+
+/* ---------- Кнопки: плоские, прямоугольные, без теней ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: opacity .2s ease, background .2s ease, color .2s ease;
+}
+.btn--black { background: var(--c-black); color: var(--c-white); }
+.btn--black:hover { opacity: .82; }
+.btn--outline { background: transparent; color: var(--c-white); border-color: var(--c-white); }
+.btn--outline:hover { background: var(--c-white); color: var(--c-blue); }
+.btn--small { padding: 8px 18px; font-size: .88rem; }
+.btn--full { width: 100%; }
+
+/* ==========================================================================
+   ИНТРО-ВИДЕО → ФОН САЙТА
+   Пока идёт ролик — это полноэкранный оверлей поверх всего (z-index: 100).
+   Когда ролик закончился, JS вешает на <html> класс .site-ready:
+   слой НЕ исчезает, а уходит ПОД контент (z-index: -1) — застывший
+   последний кадр становится фоном сайта. Поверх кадра плавно проявляется
+   плоское затемнение (::after), чтобы белый текст читался.
+   Если видео недоступно, JS вешает .no-backdrop — слой прячется целиком
+   и виден запасной синий фон <html>.
+   ========================================================================== */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--c-black); /* пока видео грузится — чёрный экран */
+}
+.intro__video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Плоское затемнение последнего кадра (НЕ градиент). Степень — в alpha. */
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 10, 20, .5);
+  opacity: 0;
+  transition: opacity .9s ease;
+  pointer-events: none;
+}
+.intro__skip {
+  position: absolute;
+  right: 20px; bottom: 20px;
+  padding: 9px 20px;
+  font: inherit;
+  font-size: .85rem;
+  color: var(--c-white);
+  background: rgba(10, 10, 10, .55);
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.intro__skip:hover { background: var(--c-black); }
+
+/* Интро закончилось: слой уходит под контент, кадр остаётся фоном.
+   Смена z-index визуально незаметна — пиксели видео не меняются. */
+.site-ready .intro { z-index: -1; background: none; }
+.site-ready .intro::after { opacity: 1; }
+.site-ready .intro__skip { display: none; }
+
+/* Видео недоступно — слой прячем, работает запасной синий фон <html> */
+.no-backdrop .intro { display: none; }
+
+/* Пока идёт интро — страница не скроллится и контент невидим */
+.intro-active body { overflow: hidden; }
+
+/* Каскадное проявление hero-элементов после интро */
+.fade-item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.site-ready .fade-item { opacity: 1; transform: none; }
+.site-ready .fade-item:nth-child(1) { transition-delay: .15s; }
+.site-ready .fade-item:nth-child(2) { transition-delay: .3s; }
+.site-ready .fade-item:nth-child(3) { transition-delay: .45s; }
+.site-ready .fade-item:nth-child(4) { transition-delay: .6s; }
+
+/* ==========================================================================
+   ШАПКА
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  /* Вверху страницы шапка прозрачна (виден кадр-фон), при прокрутке
+     JS вешает .is-scrolled — шапка становится чёрной, чтобы белый
+     текст читался и над белыми секциями магазина/брони. */
+  background: transparent;
+  transition: background .3s ease;
+}
+.site-header.is-scrolled {
+  background: var(--c-black);
+}
+.site-header__logo {
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: .04em;
+  text-decoration: none;
+}
+.site-header__nav { display: none; gap: 26px; }
+.site-header__nav a {
+  text-decoration: none;
+  font-size: .92rem;
+  opacity: .75;
+  transition: opacity .2s;
+}
+.site-header__nav a:hover { opacity: 1; }
+@media (min-width: 720px) { .site-header__nav { display: flex; } }
+
+.site-header__right { display: flex; align-items: center; gap: 14px; }
+
+/* Кнопка-корзина со счётчиком */
+.cart {
+  position: relative;
+  display: inline-flex;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: var(--c-white);
+  cursor: pointer;
+}
+.cart__count {
+  position: absolute;
+  top: 0; right: 0;
+  min-width: 17px; height: 17px;
+  padding: 0 4px;
+  font-size: .68rem;
+  line-height: 17px;
+  text-align: center;
+  background: var(--c-black);
+  color: var(--c-white);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   ГЛАВНЫЙ ЭКРАН
+   ========================================================================== */
+.hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(var(--header-h) + 24px) clamp(20px, 6vw, 80px) 60px;
+}
+.hero__title {
+  font-size: clamp(3.2rem, 12vw, 8.5rem);
+  letter-spacing: -.03em;
+  margin: 0 0 18px;
+}
+.hero__sub { font-size: clamp(1rem, 2vw, 1.25rem); opacity: .85; margin-bottom: 34px; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ==========================================================================
+   СЕКЦИИ
+   ========================================================================== */
+.section { padding: clamp(64px, 9vw, 120px) clamp(20px, 6vw, 80px); }
+.section--line { border-top: var(--line); }
+
+/* Белые секции (магазин, бронь): чёрный текст, тонкие чёрные линии */
+.section--white {
+  background: var(--c-white);
+  color: var(--c-black);
+}
+.section--white + .section--white { border-top: 1px solid rgba(10, 10, 10, .12); }
+.section__inner { max-width: 1080px; margin: 0 auto; }
+.section__inner--narrow { max-width: 560px; }
+.section__title { font-size: clamp(1.7rem, 4vw, 2.6rem); margin-bottom: 1em; }
+
+/* Плавное появление блоков при прокрутке (IntersectionObserver в JS) */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- О курорте ---------- */
+.about__grid {
+  display: grid;
+  gap: 24px;
+  max-width: 900px;
+  opacity: .9;
+}
+@media (min-width: 720px) { .about__grid { grid-template-columns: 1fr 1fr; gap: 48px; } }
+
+.stats {
+  list-style: none;
+  margin: 56px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: var(--line);
+}
+@media (min-width: 720px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+.stats li { padding: 22px 8px 0; }
+.stats strong { display: block; font-size: 1.9rem; font-weight: 600; }
+.stats span { font-size: .85rem; opacity: .7; }
+
+/* ---------- Удобства ---------- */
+.amenities {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  gap: 40px 32px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.amenities li .icon { margin-bottom: 14px; }
+.amenities h3 { font-size: 1.05rem; margin-bottom: .3em; }
+.amenities p { margin: 0; font-size: .92rem; opacity: .75; }
+
+/* ==========================================================================
+   МАГАЗИН
+   Белые плоские карточки, чёрные кнопки. Никаких теней и скруглений.
+   ========================================================================== */
+.products {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+.product {
+  background: var(--c-white);
+  color: var(--c-black);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(10, 10, 10, .15); /* граница карточки на белом фоне */
+  border-radius: 2px;
+}
+.product__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(10, 10, 10, .12); /* тонкая рамка вместо фото-заглушки */
+  border-radius: 2px;
+}
+.product__name { font-size: 1rem; margin: 0 0 4px; }
+.product__price { font-size: .95rem; opacity: .65; margin: 0 0 16px; }
+.product .btn { margin-top: auto; }
+
+/* Мгновенная обратная связь «Добавлено» */
+.product .js-add.is-added { background: var(--c-blue); }
+
+.cart-summary { margin: 28px 0 0; font-size: .95rem; opacity: .85; }
+
+/* ==========================================================================
+   БРОНИРОВАНИЕ
+   ========================================================================== */
+.booking { display: grid; gap: 16px; }
+.booking__row {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 480px) { .booking__row { grid-template-columns: 1fr; } }
+
+.field { display: grid; gap: 6px; }
+.field span {
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .7;
+}
+.field input,
+.field select {
+  font: inherit;
+  padding: 12px 14px;
+  color: var(--c-black);
+  background: var(--c-white);
+  border: 1px solid rgba(10, 10, 10, .35); /* видимая рамка на белой секции */
+  border-radius: 2px;
+  width: 100%;
+}
+.field input:focus,
+.field select:focus { outline: 2px solid var(--c-black); outline-offset: 1px; }
+/* нормализуем высоту date-инпутов в WebKit */
+.field input[type="date"] { min-height: 47px; -webkit-appearance: none; appearance: none; }
+
+.booking__error {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: .9rem;
+  background: var(--c-white);
+  color: var(--c-black);
+  border: 1px solid var(--c-black);
+  border-left-width: 3px;
+}
+.booking__done {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 18px 20px;
+  background: var(--c-black);
+  color: var(--c-white);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   ПОДВАЛ — чёрный, как «деталь» палитры
+   ========================================================================== */
+.site-footer {
+  background: var(--c-black);
+  padding: 40px clamp(20px, 6vw, 80px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  font-size: .88rem;
+}
+.site-footer p { margin: 0; opacity: .8; }
+
+/* ==========================================================================
+   ДОСТУПНОСТЬ: «уменьшить движение» — без анимаций и каскадов.
+   JS в этом случае ещё и пропускает интро целиком.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade-item, .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .intro::after, .site-header { transition: none; }
+}
